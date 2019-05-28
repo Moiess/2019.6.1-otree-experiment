@@ -14,7 +14,6 @@ class Contribute(Page):
     """Player: Choose how much to contribute"""
     form_model = 'player'
     form_fields = ['contribution']
-    # timeout_seconds = 30
     timer_text = '请在剩余时间内完成选择，若未选择视为贡献0点'
 
     def before_next_page(self):                # 倒计时结束策略
@@ -25,6 +24,13 @@ class Contribute(Page):
             me.contribution = c(0)
             me.is_random = True
 
+    def get_timeout_seconds(self):
+        if self.round_number <= 5:
+            return 90
+        elif self.round_number <= 10:
+            return 70
+        else:
+            return 50
 
 class GroupWaitPage(WaitPage):
     template_name = 'public_goods_1/GroupWaitPage.html'
@@ -97,7 +103,7 @@ class Results(Page):
             'company_multiplier': company_multiplier
         }
 
-    # timeout_seconds = 30
+    timeout_seconds = 20
 
 
 class Information(Page):
