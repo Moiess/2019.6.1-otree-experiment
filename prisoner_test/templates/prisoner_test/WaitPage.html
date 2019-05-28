@@ -1,0 +1,13 @@
+{% extends 'otree/WaitPage.html' %}
+{% load otree %}
+{% block title %}{{ title_text }}{% endblock %}
+{% block content %}
+    {{ body_text }}
+    <p>
+        <tr><td>你也可以继续和ta聊一会</td></tr>
+        {% chat %}
+    </p>
+    <p>
+        你迄今为止的总收益是{{ cumulative_payoff }}
+    </p>
+{% endblock %}

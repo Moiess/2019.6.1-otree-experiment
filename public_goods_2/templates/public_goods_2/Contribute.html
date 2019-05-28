@@ -1,0 +1,18 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}
+    第{{ player.round_number }}回合
+{% endblock %}
+
+{% block content %}
+
+    {% formfield player.contribution label="你要为公司贡献多少时间（从0到100）？" %}
+    你可以在这里和你同一个公司的同学聊聊，聊天是匿名的，只会显示你的ID：
+    {% chat nickname=player.chat_nickname channel=player.role %}
+
+    {% next_button %}
+
+    {% include Constants.instructions_template %}
+
+{% endblock %}

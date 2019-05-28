@@ -1,0 +1,15 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}
+请输入你的姓名和学号
+{% endblock %}
+
+{% block content %}
+    <table class="table-condensed" style="width:500px; margin-top:20px;">
+
+        <tr><td>{% formfields %}<td><tr>
+        <tr><td colspan="2"><hr/></td></tr>
+        <tr><td>{% next_button %}<td><tr>
+    </table>
+{% endblock %}

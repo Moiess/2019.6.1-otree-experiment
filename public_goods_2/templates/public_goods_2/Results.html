@@ -1,0 +1,40 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}
+    第{{ player.round_number }}回合结果：
+{% endblock %}
+
+{% block content %}
+  
+
+    <table class="table-condensed" style="width:300px; margin-top:20px;">
+        {% if player.is_random %}
+            本回合贡献是由于倒计时结束随机生成的
+        {% endif %}
+        <tr><td>你贡献了：</td><td>{{ player.contribution }}</td></tr>
+                <!--<tr><td colspan="2"><hr/></td></tr>-->
+        <tr><td>你本回合收益为：</td><td>{{ player.payoff }}</td></tr>
+                <!--<tr><td colspan="2"><hr/></td></tr>-->
+        <tr><td>你的总收益为：</td><td>{{ player.cumulative_payoff }}</td></tr>
+                <!--<tr><td colspan="2"><hr/></td></tr>-->
+        <tr><td>你的总收入在所有人中的排名：</td><td>第{{ player.rank }}名</td></tr>
+                <!--<tr><td colspan="2"><hr/></td></tr>-->
+        <!--<tr><td>你的公司本回合业绩为：</td><td>{{ company_payoff }}</td></tr>-->
+                <!--&lt;!&ndash;<tr><td colspan="2"><hr/></td></tr>&ndash;&gt;-->
+        <!--<tr><td>你的公司本回合排名为：</td><td>第{{ company_rank }}名</td></tr>-->
+                <!--&lt;!&ndash;<tr><td colspan="2"><hr/></td></tr>&ndash;&gt;-->
+        <!--<tr><td>你的公司本回合的盈利倍数为：</td><td>{{ company_multiplier }}倍</td></tr>-->
+                <tr><td colspan="2"><hr/></td></tr>
+        <tr><td>本回合所有人的平均收益为：</td><td>{{ group.avg_payoff }}</td></tr>
+        <tr><td colspan="2"><hr/></td></tr>
+    </table>
+    <p></p>
+
+    {% next_button %}
+
+
+    {% include Constants.instructions_template %}
+
+
+{% endblock %}

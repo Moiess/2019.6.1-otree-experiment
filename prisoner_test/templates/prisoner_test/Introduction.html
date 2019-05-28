@@ -1,0 +1,14 @@
+{% extends "global/Page.html" %}
+{% load otree static %}
+
+{% block title %}
+    下面是本次实验简介
+{% endblock %}
+
+{% block content %}
+
+    {% include Constants.instructions_template %}
+
+    {% next_button %}
+
+{% endblock %}
