@@ -104,7 +104,7 @@ class Group(BaseGroup):
             else:
                 self.k3 = (self.k4+self.k3)/2
                 self.k4 = self.k3
-        print(self.k1, self.k2, self.k3, self.k4)
+        # print(self.k1, self.k2, self.k3, self.k4)
         fir = float(self.k1*c[0][1])
         sec = float(self.k2*c[1][1])
         thr = float(self.k3*c[2][1])
