@@ -1,0 +1,13 @@
+{% extends 'otree/WaitPage.html' %}
+{% load otree %}
+{% block title %}{{ title_text }}{% endblock %}
+{% block content %}
+    <p>
+        你目前的总收益为：{{ cumulative_payoff }}
+    </p>
+    {{ body_text }}
+    <!--你可以在这里和你同一个公司的同学聊聊，聊天是匿名的，只会显示你的ID：-->
+    <!--{% chat nickname=player.chat_nickname channel=player.role %}-->
+
+
+{% endblock %}

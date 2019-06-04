@@ -10,11 +10,11 @@ doc = """
 
 
 class Constants(BaseConstants):
-    name_in_url = 'public_goods_2'
+    name_in_url = 'chat_off'
     players_per_group = None
     num_rounds = 100
 
-    instructions_template = 'public_goods_2/Instructions.html'
+    instructions_template = 'chat_off/Instructions.html'
 
     # """Amount allocated to each player"""
     endowment = c(100)
@@ -53,6 +53,10 @@ class Group(BaseGroup):
     rank_b = models.IntegerField()
     rank_c = models.IntegerField()
     rank_d = models.IntegerField()
+    k1 = models.FloatField()
+    k2 = models.FloatField()
+    k3 = models.FloatField()
+    k4 = models.FloatField()
 
     def set_avg_payoff(self):
         self.avg_payoff = sum([p.payoff for p in self.get_players()])/len([p.contribution for p in self.get_players()])
@@ -64,25 +68,47 @@ class Group(BaseGroup):
         self.total_contribution_D = sum(p.contribution for p in self.get_players() if p.role() == 'D')
         # print('A:',self.total_contribution_A,'B:',self.total_contribution_B,'C:',self.total_contribution_C,'D:',self.total_contribution_D)
         contribution = {
-            'A': sum(p.contribution for p in self.get_players() if p.role() == 'A') / len([p.contribution
-                                                                                           for p in self.get_players()
-                                                                                           if p.role() == 'A']),
-            'B': sum(p.contribution for p in self.get_players() if p.role() == 'B') / len([p.contribution
-                                                                                           for p in self.get_players()
-                                                                                           if p.role() == 'B']),
-            'C': sum(p.contribution for p in self.get_players() if p.role() == 'C') / len([p.contribution
-                                                                                           for p in self.get_players()
-                                                                                           if p.role() == 'C']),
-            'D': sum(p.contribution for p in self.get_players() if p.role() == 'D') / len([p.contribution
-                                                                                           for p in self.get_players()
-                                                                                           if p.role() == 'D'])
+            'A': float(self.total_contribution_A / len([p.contribution for p in self.get_players()if p.role() == 'A'])),
+            'B': float(self.total_contribution_B / len([p.contribution for p in self.get_players()if p.role() == 'B'])),
+            'C': float(self.total_contribution_C / len([p.contribution for p in self.get_players()if p.role() == 'C'])),
+            'D': float(self.total_contribution_D / len([p.contribution for p in self.get_players()if p.role() == 'D']))
         }
         # print(contribution)
         c = sorted(contribution.items(), key=lambda x: x[1], reverse=True)
-        fir = float(3*c[0][1])
-        sec = float(3*c[1][1])
-        thr = float(3*c[2][1])
-        fou = float(3*c[3][1])
+        self.k1 = 3
+        self.k2 = 2
+        self.k3 = 1
+        self.k4 = 0
+        if c[0][1] == c[1][1]:
+            self.k1 = (self.k1+self.k2)/2
+            self.k2 = self.k1
+        if c[2][1] == c[1][1]:
+            if c[2][1] == c[0][1]:
+                self.k1 = (self.k1+self.k2+self.k3)/3
+                self.k2 = self.k1
+                self.k3 = self.k1
+            else:
+                self.k2 = (self.k2+self.k3)/2
+                self.k3 = self.k2
+        if c[3][1] == c[2][1]:
+            if c[3][1] == c[1][1]:
+                if c[3][1] == c[0][1]:
+                    self.k1 = (self.k1+self.k2+self.k3+self.k4)/4
+                    self.k2 = self.k1
+                    self.k3 = self.k1
+                    self.k4 = self.k1
+                else:
+                    self.k2 = (self.k2+self.k3+self.k4)/3
+                    self.k3 = self.k2
+                    self.k4 = self.k2
+            else:
+                self.k3 = (self.k4+self.k3)/2
+                self.k4 = self.k3
+        # print(self.k1, self.k2, self.k3, self.k4)
+        fir = float(self.k1*c[0][1])
+        sec = float(self.k2*c[1][1])
+        thr = float(self.k3*c[2][1])
+        fou = float(self.k4*c[3][1])
         c1 = [(c[0][0], fir), (c[1][0], sec), (c[2][0], thr), (c[3][0], fou)]
 
         self.individual_share_A = dict(c1)['A']
@@ -113,18 +139,19 @@ class Group(BaseGroup):
         rank = dict(enumerate(dict(sorted(player_list.items(), key=lambda x: x[1], reverse=True)).keys()))
         self.session.vars['cumulative_payoff_rank'] = {v: k for k, v in rank.items()}
         # print(self.session.vars['cumulative_payoff_rank'])
+    #
+    # def set_id_list(self):
+    #     a = 1
+    #     b = 1
+    #     for p in self.get_players():
+    #         if p.in_round(1)._class == 0:
+    #             p.id_in_class = a
+    #             a += 1
+    #         else:
+    #             p.id_in_class = b
+    #             b += 1
+    #     pass
 
-    def set_id_list(self):
-        a = 1
-        b = 1
-        for p in self.get_players():
-            if p.in_round(1)._class == 0:
-                p.id_in_class = a
-                a += 1
-            else:
-                p.id_in_class = b
-                b += 1
-        pass
 
 class Player(BasePlayer):
     contribution = models.CurrencyField(
@@ -134,10 +161,10 @@ class Player(BasePlayer):
 
     name = models.StringField()
     number = models.IntegerField()
-    _class = models.IntegerField(choices=[
-        [0, '网络1701'],
-        [1, '信工1701'],
-    ])
+    # _class = models.IntegerField(choices=[
+    #     [0, '计科1701'],
+    #     [1, '软件1701'],
+    # ])
     id_in_class = models.IntegerField()
     cumulative_payoff = models.CurrencyField()
     rank = models.IntegerField()
@@ -147,16 +174,14 @@ class Player(BasePlayer):
         self.cumulative_payoff = sum([p.payoff for p in self.in_all_rounds()])
 
     def role(self):
-        if self.in_round(1)._class == 0:
-            if int(self.id_in_class) % 2 == 0:
-                return 'A'
-            else:
-                return 'B'
-        else:
-            if int(self.id_in_class) % 2 == 0:
-                return 'C'
-            else:
-                return 'D'
+        if self.id_in_group % 4 == 0:
+            return 'A'
+        if self.id_in_group % 4 == 1:
+            return 'B'
+        if self.id_in_group % 4 == 2:
+            return 'C'
+        if self.id_in_group % 4 == 3:
+            return 'D'
 
     def set_rank(self):
         self.rank = self.session.vars['cumulative_payoff_rank'][self.id_in_group] + 1

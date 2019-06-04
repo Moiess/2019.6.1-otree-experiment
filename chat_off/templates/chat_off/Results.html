@@ -10,7 +10,7 @@
 
     <table class="table-condensed" style="width:300px; margin-top:20px;">
         {% if player.is_random %}
-            本回合贡献是由于倒计时结束随机生成的
+            本回合贡献是由于倒计时结束生成的
         {% endif %}
         <tr><td>你贡献了：</td><td>{{ player.contribution }}</td></tr>
                 <!--<tr><td colspan="2"><hr/></td></tr>-->
@@ -19,12 +19,12 @@
         <tr><td>你的总收益为：</td><td>{{ player.cumulative_payoff }}</td></tr>
                 <!--<tr><td colspan="2"><hr/></td></tr>-->
         <tr><td>你的总收入在所有人中的排名：</td><td>第{{ player.rank }}名</td></tr>
+                <tr><td colspan="2"><hr/></td></tr>
+        <tr><td>你的公司本回合业绩为：</td><td>{{ company_payoff }}</td></tr>
                 <!--<tr><td colspan="2"><hr/></td></tr>-->
-        <!--<tr><td>你的公司本回合业绩为：</td><td>{{ company_payoff }}</td></tr>-->
-                <!--&lt;!&ndash;<tr><td colspan="2"><hr/></td></tr>&ndash;&gt;-->
         <!--<tr><td>你的公司本回合排名为：</td><td>第{{ company_rank }}名</td></tr>-->
-                <!--&lt;!&ndash;<tr><td colspan="2"><hr/></td></tr>&ndash;&gt;-->
-        <!--<tr><td>你的公司本回合的盈利倍数为：</td><td>{{ company_multiplier }}倍</td></tr>-->
+                <!--<tr><td colspan="2"><hr/></td></tr>-->
+        <tr><td>你的公司本回合的盈利倍数为：</td><td>{{ company_multiplier }}倍</td></tr>
                 <tr><td colspan="2"><hr/></td></tr>
         <tr><td>本回合所有人的平均收益为：</td><td>{{ group.avg_payoff }}</td></tr>
         <tr><td colspan="2"><hr/></td></tr>
@@ -32,7 +32,8 @@
     <p></p>
 
     {% next_button %}
-
+    <!--你可以在这里和你同一个公司的同学聊聊，聊天是匿名的，只会显示你的ID：-->
+    <!--{% chat nickname=player.chat_nickname channel=player.role %}-->
 
     {% include Constants.instructions_template %}
 

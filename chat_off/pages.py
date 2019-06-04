@@ -26,14 +26,14 @@ class Contribute(Page):
 
     def get_timeout_seconds(self):
         if self.round_number <= 5:
-            return 90
-        elif self.round_number <= 10:
-            return 70
-        else:
             return 50
+        elif self.round_number <= 10:
+            return 40
+        else:
+            return 30
 
 class GroupWaitPage(WaitPage):
-    template_name = 'public_goods_1/GroupWaitPage.html'
+    template_name = 'chat_off/GroupWaitPage.html'
 
     def vars_for_template(self):
         me = self.participant
@@ -45,7 +45,7 @@ class GroupWaitPage(WaitPage):
 
 
 class ResultsWaitPage(WaitPage):
-    template_name = 'public_goods_1/ResultsWaitPage.html'
+    template_name = 'chat_off/ResultsWaitPage.html'
 
     def vars_for_template(self):
 
@@ -63,7 +63,7 @@ class ResultsWaitPage(WaitPage):
         for p in self.group.get_players():
             p.set_rank()
 
-    body_text = "请等待其他成员完成以继续"
+    body_text = "正在等待其他人选择……"
 
 
 class Results(Page):

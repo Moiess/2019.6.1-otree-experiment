@@ -13,10 +13,16 @@ SESSION_CONFIG_DEFAULTS = {
 
 SESSION_CONFIGS = [
     {
+        'name': 'chat_off',
+        'display_name': "chat_off",
+        'num_demo_participants': 8,
+        'app_sequence': ['chat_off'],
+    },
+    {
         'name': 'chat_on',
         'display_name': "chat_on",
         'num_demo_participants': 8,
-        'app_sequence': ['public_goods_1'],
+        'app_sequence': ['chat_on'],
     },
     # {
     #     'name': 'public_goods_2',

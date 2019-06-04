@@ -6,7 +6,6 @@ import random
 class Introduction(Page):
     """Description of the game: How to play and returns expected"""
     def is_displayed(self):
-        self.group.set_id_list()
         self.player.chat_nickname()
         return self.round_number == 1
 
@@ -15,17 +14,32 @@ class Contribute(Page):
     """Player: Choose how much to contribute"""
     form_model = 'player'
     form_fields = ['contribution']
-    timeout_seconds = 30
-    timer_text = '请在剩余时间内完成选择，若未选择视为贡献100点'
+    timer_text = '请在剩余时间内完成选择，若未选择视为贡献0点'
 
     def before_next_page(self):                # 倒计时结束策略
+        # self.group.set_id_list()
+        # self.player.chat_nickname()
         if self.timeout_happened:
             me = self.player
-            me.contribution = c(random.randint(0,100))
+            me.contribution = c(0)
             me.is_random = True
+
+    def get_timeout_seconds(self):
+        if self.round_number <= 5:
+            return 90
+        elif self.round_number <= 10:
+            return 70
+        else:
+            return 50
 
 
 class GroupWaitPage(WaitPage):
+
+    template_name = 'chat_on/GroupWaitPage.html'
+
+    def vars_for_template(self):
+        me = self.participant
+        return {'cumulative_payoff': me.payoff}
 
     wait_for_all_groups = True
     body_text = '正在等待所有人入场...'
@@ -33,8 +47,16 @@ class GroupWaitPage(WaitPage):
 
 
 class ResultsWaitPage(WaitPage):
+    template_name = 'chat_on/ResultsWaitPage.html'
+
+    def vars_for_template(self):
+
+        me = self.participant
+        me.get_players()
+        return {'cumulative_payoff': me.payoff}
+
     def after_all_players_arrive(self):
-        self.group.set_id_list()
+
         self.group.set_payoffs()
         self.group.set_avg_payoff()
         for p in self.group.get_players():
@@ -68,13 +90,13 @@ class Results(Page):
             company_rank = self.group.rank_d
 
         if company_rank == 1:
-            company_multiplier = 6
+            company_multiplier = self.group.k1
         elif company_rank == 2:
-            company_multiplier = 4
+            company_multiplier = self.group.k2
         elif company_rank == 3:
-            company_multiplier = 2
+            company_multiplier = self.group.k3
         elif company_rank == 4:
-            company_multiplier = 1
+            company_multiplier = self.group.k4
 
         return{
             'player_role': self.player.role(),
@@ -83,13 +105,13 @@ class Results(Page):
             'company_multiplier': company_multiplier
         }
 
-    timeout_seconds = 30
+    timeout_seconds = 20
 
 
 class Information(Page):
     """player's information"""
     form_model = 'player'
-    form_fields = ['name', 'number', '_class']
+    form_fields = ['name', 'number']
 
     def is_displayed(self):
         return self.round_number == 1
